@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Вход</title>
+</head>
+<body>
+    You can check notifications here -> <a href="{%url 'notifications-view' %}">notifications</a><br>
+    {%if user.is_authenticated%}
+    <br>
+    <strong>STATUS:</strong>Authenticated
+    <p>You want to logout, you need to clicl here -> <a href="{% url 'logout' %}">logout</a></p>
+
+    {%else%}
+    <p>You are not authenticated, you need to authenticate. You can do here -> <a href="{% url 'login' %}">Login</a></p>
+    {%endif%}
+</body>
+</html>

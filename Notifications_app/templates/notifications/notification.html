@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Уведомления</title>
+</head>
+<body>
+
+    <h1>Уведомления</h1>
+
+    {% if notifications %}
+        <ul>
+        {% for notification in notifications %}
+            <li>
+                <strong>{{ notification.created_at|date:"F j, Y, H:i" }}:</strong> 
+                <br>pk=<strong>{{ notification.pk }}</strong>
+                <br>owner=<strong>{{notification.owner}}</strong>
+                <br>title=<strong>{{ notification.title }}</strong><br>
+                content={{ notification.content }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Notifications do not exist.</p>
+    {% endif %}
+    {%if user.is_authenticated%}
+    <h2>Notification CRUD</h2>
+    <form method='POST'>
+        {% csrf_token %}
+        <input type="hidden" name="type" value='crud'>
+        <label for="operation">Choose your operation:</label>
+        <select id="operation" name="operation_type">
+            <option value="create">Create notification</option>
+            <option value="update">Update notification</option>
+            <option value="delete">Delete notification</option>
+        </select><br>
+        <label for="notification-pk">Pk:</label>
+        <input id="notification-pk" type="number" name='pk'><br>
+        <label for="create-title">Title:</label>
+        <input type="text" id="create-title" name="title"><br>
+        <label for="create-content">Content:</label>
+        <textarea id="create-content" name="content"></textarea><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Accounts:</h2>
+
+    {%for u in users%}
+    <form method='POST'>
+        {% csrf_token %}
+        <input type="hidden" name="type" value='subscribe'>
+        <ul>
+            <li>
+                {{u}}
+                <input type="hidden" value='{{u.pk}}' name="user_to_subscribe">
+                <button type="submit">Subscribe</button>
+            </li>
+        </ul>
+    </form>
+    {%endfor%}
+    {%else%}
+    {%endif%}
+</body>
+</html>
