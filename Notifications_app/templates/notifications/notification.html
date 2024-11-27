@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Уведомления</title>
+    <title>Notifications</title>
 </head>
 <body>
 
-    <h1>Уведомления</h1>
+    <h1>Notifications</h1>
 
     {% if notifications %}
         <ul>
@@ -29,17 +29,17 @@
     <form method='POST'>
         {% csrf_token %}
         <input type="hidden" name="type" value='crud'>
-        <label for="operation">Choose your operation:</label>
+        <label for="operation">Choose your operation:</label><br>
         <select id="operation" name="operation_type">
             <option value="create">Create notification</option>
             <option value="update">Update notification</option>
             <option value="delete">Delete notification</option>
         </select><br>
-        <label for="notification-pk">Pk:</label>
+        <label for="notification-pk">Pk (<span style="font-size:10px;opacity:70%;color:red;">UPDATE, DELETE</span> <span style="font-size:10px;opacity:40%">methods</span>):</label><br>    
         <input id="notification-pk" type="number" name='pk'><br>
-        <label for="create-title">Title:</label>
+        <label for="create-title">Title:</label><br>
         <input type="text" id="create-title" name="title"><br>
-        <label for="create-content">Content:</label>
+        <label for="create-content">Content:</label><br>
         <textarea id="create-content" name="content"></textarea><br>
         <button type="submit">Submit</button>
     </form>
@@ -47,19 +47,27 @@
     <h2>Accounts:</h2>
 
     {%for u in users%}
-    <form method='POST'>
-        {% csrf_token %}
-        <input type="hidden" name="type" value='subscribe'>
-        <ul>
-            <li>
-                {{u}}
-                <input type="hidden" value='{{u.pk}}' name="user_to_subscribe">
-                <button type="submit">Subscribe</button>
-            </li>
-        </ul>
-    </form>
-    {%endfor%}
+        <form method='POST'>
+            {% csrf_token %}
+            <input type="hidden" name="type" value='subscribe'>
+            <ul>
+                <li>
+                    {%if user == u%}You (your nickname --> <strong>{{u}}</strong>){%else%}{{u}}{%endif%}
+                    <input type="hidden" value='{{u.pk}}' name="user_to_subscribe">
+                    {%if user == u%}{%else%}--> <button type="submit">Subscribe/Unsubscribe</button>{%endif%}
+                </li>
+                <ol>Subscribers:
+                    {%for s in subscribers%}
+                    {% if u == s.subscribed_to%}
+                    <li>{% if u == s.subscribed_to%}{{s.subscriber}}{%endif%}</li>
+                    {%endif%}
+                    {%endfor%}
+                </ol>
+            </ul>
+        </form>
+        {%endfor%}
     {%else%}
     {%endif%}
+    go to home -> <a href="{%url 'home' %}">home</a>
 </body>
 </html>

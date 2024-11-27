@@ -57,21 +57,37 @@ class NotificationView(TemplateView):
 
                         print('deleted')
 
-                return HttpResponse('Operation successfully executed!')
+                return HttpResponse('Operation successfully executed! Back to notifications -> <a href="nf">notifications</a> ')
 
             case 'subscribe':
 
-                subscribe_to_user = request.POST.get('user_to_subscribe')
+                subscribe_to_user = request.POST.get('user_to_subscribe, back to notifications -> <a href="nf">notifications</a> ')
                 user = User.objects.get(pk=int(subscribe_to_user))
                 if subscribe_to_user:
 
-                    Subscription.objects.create(subscriber=request.user, subscribed_to=user)
+                    if user == request.user:
 
-                    return HttpResponse('Successfully subscribed.')
+                        return HttpResponse('You cant subscribe on yourself, back to notifications -> <a href="nf">notifications</a> ')
+
+                    try:
+                        print(request.user)
+                        subs = Subscription.objects.get(subscriber=request.user, subscribed_to=user)
+
+                        if subs:
+
+                            subs.delete()
+
+                            return HttpResponse('Successfully unsubscribed, back to notifications -> <a href="nf">notifications</a> ')
+
+                    except Subscription.DoesNotExist:
+
+                        Subscription.objects.create(subscriber=request.user, subscribed_to=user)
+
+                        return HttpResponse('Successfully subscribed, back to notifications -> <a href="nf">notifications</a> ')
 
                 else:
 
-                    return HttpResponse('User doest not exist.')
+                    return HttpResponse('User doest not exist, back to notifications -> <a href="nf">notifications</a> ')
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
 
@@ -81,7 +97,7 @@ class NotificationView(TemplateView):
 
         context = super().get_context_data(**kwargs)
 
-        subscribers = Subscription.objects.filter(subscriber=users)
+        subscribers = Subscription.objects.all()
 
         context['notifications'] = notifications
         context['users'] = users
