@@ -91,6 +91,8 @@ class NotificationView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
 
+        """return context data for django template language"""
+
         notifications = Notification.objects.all()
 
         users = User.objects.all()
