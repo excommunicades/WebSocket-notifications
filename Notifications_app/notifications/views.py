@@ -88,4 +88,4 @@ class NotificationView(TemplateView):
         context['subscribers'] = subscribers
         return context
 
-# TODO: subscribers, websockets, notifies
+# TODO: subscribers, websockets, notifies 
